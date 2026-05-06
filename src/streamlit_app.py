@@ -274,7 +274,7 @@ with c:
         st.markdown("### 📄 Document Auditor")
         f = st.file_uploader("Upload Annual Report (PDF)")
 
-    if f:
+        if f:
         with st.spinner("Auditing massive report..."):
             file_bytes = f.read()
             doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
