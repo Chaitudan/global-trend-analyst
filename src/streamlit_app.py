@@ -271,63 +271,62 @@ with c:
 
    
 
-        st.markdown("### 📄 Document Auditor")
-f = st.file_uploader("Upload Annual Report (PDF)")
+            st.markdown("### 📄 Document Auditor")
+    f = st.file_uploader("Upload Annual Report (PDF)")
 
-if f:
-    with st.spinner("Auditing massive report..."):
-        file_bytes = f.read()
-        doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
+    if f:
+        with st.spinner("Auditing massive report..."):
+            file_bytes = f.read()
+            doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
 
-        snippets = []
-        total_score = 0
+            snippets = []
+            total_score = 0
 
-        MAX_PAGES = 30
-        pages = []
+            MAX_PAGES = 30
+            pages = []
 
-        for i, page in enumerate(doc):
-            if i >= MAX_PAGES:
-                break
-            pages.append(page.get_text())
+            for i, page in enumerate(doc):
+                if i >= MAX_PAGES:
+                    break
+                pages.append(page.get_text())
 
-        # --- SENTENCE-BASED ANALYSIS ---
-        for i, page in enumerate(pages):
-            sentences = page.split(".")
-            for sentence in sentences:
-                score, label = classify_sentence_risk(sentence)
-                if score > 0:
-                    snippets.append((label, i+1, sentence.strip()))
-                    total_score += score
+            # --- SENTENCE-BASED ANALYSIS ---
+            for i, page in enumerate(pages):
+                sentences = page.split(".")
+                for sentence in sentences:
+                    score, label = classify_sentence_risk(sentence)
+                    if score > 0:
+                        snippets.append((label, i+1, sentence.strip()))
+                        total_score += score
 
-        full_text = " ".join(pages).lower()
+            full_text = " ".join(pages).lower()
 
-        if "true and fair view" in full_text:
-            op = "Unqualified"
-        elif "qualified opinion" in full_text:
-            op = "Qualified"
-        else:
-            op = "Unclear"
+            if "true and fair view" in full_text:
+                op = "Unqualified"
+            elif "qualified opinion" in full_text:
+                op = "Qualified"
+            else:
+                op = "Unclear"
 
-        verdict = "🟢 GOOD" if total_score <= 1 else "🟡 CAUTION" if total_score <= 3 else "🔴 HIGH RISK"
+            verdict = "🟢 GOOD" if total_score <= 1 else "🟡 CAUTION" if total_score <= 3 else "🔴 HIGH RISK"
 
-        c1, c2 = st.columns(2)
-        c1.metric("Audit Opinion", op)
-        c2.metric("Risk Score", total_score)
+            c1, c2 = st.columns(2)
+            c1.metric("Audit Opinion", op)
+            c2.metric("Risk Score", total_score)
 
-        st.markdown(f"### Final Verdict: {verdict}")
+            st.markdown(f"### Final Verdict: {verdict}")
 
-        summary = generate_audit_summary(snippets, total_score, op)
-        st.markdown("### 🧠 Audit Insight")
-        st.info(summary)
+            summary = generate_audit_summary(snippets, total_score, op)
+            st.markdown("### 🧠 Audit Insight")
+            st.info(summary)
 
-        if snippets:
-            for k, p, t in snippets:
-                st.write(f"{k} (Page {p})")
-                st.caption(t)
+            if snippets:
+                for k, p, t in snippets:
+                    st.write(f"{k} (Page {p})")
+                    st.caption(t)
 
-        if len(doc) > MAX_PAGES:
-            st.info(f"⚠️ Only first {MAX_PAGES} pages analyzed for speed.")
-
+            if len(doc) > MAX_PAGES:
+                st.info(f"⚠️ Only first {MAX_PAGES} pages analyzed for speed.")
 # RIGHT PANEL
 with r:
     st.markdown("### 📈 High Performers")
