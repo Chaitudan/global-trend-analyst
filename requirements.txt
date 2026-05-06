@@ -1,3 +1,7 @@
-altair
-pandas
 streamlit
+yfinance
+pandas
+plotly
+pytz
+pymupdf
+requests
