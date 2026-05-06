@@ -13,8 +13,8 @@ tags:
 - technical-analysis
 sdk_version: 1.57.0
 ---
-
 # 📊 Global Trend Analyst
+### [🚀 Launch Live Terminal](https://huggingface.co)
 
 A high-performance financial dashboard designed for institutional-grade stock analysis and forensic auditing.
 
