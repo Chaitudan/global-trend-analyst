@@ -269,20 +269,28 @@ with c:
         st.metric("Debt/Eq",round(d["de"],2) if d["de"] else "N/A")
         st.markdown(generate_signal(d))
 
-    st.markdown("### 📄 Document Auditor")
-    f=st.file_uploader("Upload Annual Report (PDF)")
+   
 
-    if f:
-    # Use a spinner so the user knows it's working
+        st.markdown("### 📄 Document Auditor")
+f = st.file_uploader("Upload Annual Report (PDF)")
+
+if f:
     with st.spinner("Auditing massive report..."):
         file_bytes = f.read()
         doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
-        
-        # Only process a limited number of pages if it's too slow
-        pages = [p.get_text() for p in doc]
-        # ... rest of your audit logic ...
 
-        # --- NEW SENTENCE-BASED ANALYSIS ---
+        snippets = []
+        total_score = 0
+
+        MAX_PAGES = 30
+        pages = []
+
+        for i, page in enumerate(doc):
+            if i >= MAX_PAGES:
+                break
+            pages.append(page.get_text())
+
+        # --- SENTENCE-BASED ANALYSIS ---
         for i, page in enumerate(pages):
             sentences = page.split(".")
             for sentence in sentences:
@@ -294,28 +302,31 @@ with c:
         full_text = " ".join(pages).lower()
 
         if "true and fair view" in full_text:
-            op="Unqualified"
+            op = "Unqualified"
         elif "qualified opinion" in full_text:
-            op="Qualified"
+            op = "Qualified"
         else:
-            op="Unclear"
+            op = "Unclear"
 
-        verdict="🟢 GOOD" if total_score<=1 else "🟡 CAUTION" if total_score<=3 else "🔴 HIGH RISK"
+        verdict = "🟢 GOOD" if total_score <= 1 else "🟡 CAUTION" if total_score <= 3 else "🔴 HIGH RISK"
 
-        c1,c2=st.columns(2)
-        c1.metric("Audit Opinion",op)
-        c2.metric("Risk Score",total_score)
+        c1, c2 = st.columns(2)
+        c1.metric("Audit Opinion", op)
+        c2.metric("Risk Score", total_score)
 
         st.markdown(f"### Final Verdict: {verdict}")
 
-        summary = generate_audit_summary(snippets,total_score,op)
+        summary = generate_audit_summary(snippets, total_score, op)
         st.markdown("### 🧠 Audit Insight")
         st.info(summary)
 
         if snippets:
-            for k,p,t in snippets:
+            for k, p, t in snippets:
                 st.write(f"{k} (Page {p})")
                 st.caption(t)
+
+        if len(doc) > MAX_PAGES:
+            st.info(f"⚠️ Only first {MAX_PAGES} pages analyzed for speed.")
 
 # RIGHT PANEL
 with r:
