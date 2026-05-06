@@ -273,11 +273,14 @@ with c:
     f=st.file_uploader("Upload Annual Report (PDF)")
 
     if f:
-        doc=fitz.open(stream=io.BytesIO(f.read()))
-        pages=[p.get_text() for p in doc]
-
-        snippets=[]
-        total_score=0
+    # Use a spinner so the user knows it's working
+    with st.spinner("Auditing massive report..."):
+        file_bytes = f.read()
+        doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
+        
+        # Only process a limited number of pages if it's too slow
+        pages = [p.get_text() for p in doc]
+        # ... rest of your audit logic ...
 
         # --- NEW SENTENCE-BASED ANALYSIS ---
         for i, page in enumerate(pages):
