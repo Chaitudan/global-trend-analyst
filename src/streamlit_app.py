@@ -271,8 +271,8 @@ with c:
 
    
 
-            st.markdown("### 📄 Document Auditor")
-    f = st.file_uploader("Upload Annual Report (PDF)")
+        st.markdown("### 📄 Document Auditor")
+        f = st.file_uploader("Upload Annual Report (PDF)")
 
     if f:
         with st.spinner("Auditing massive report..."):
