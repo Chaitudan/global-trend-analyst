@@ -275,20 +275,20 @@ with c:
         f = st.file_uploader("Upload Annual Report (PDF)")
 
         if f:
-        with st.spinner("Auditing massive report..."):
-            file_bytes = f.read()
-            doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
+            with st.spinner("Auditing massive report..."):
+                file_bytes = f.read()
+                doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
 
-            snippets = []
-            total_score = 0
+                snippets = []
+                total_score = 0
 
-            MAX_PAGES = 30
-            pages = []
+                MAX_PAGES = 30
+                pages = []
 
-            for i, page in enumerate(doc):
-                if i >= MAX_PAGES:
+               for i, page in enumerate(doc):
+                   if i >= MAX_PAGES:
                     break
-                pages.append(page.get_text())
+                   pages.append(page.get_text())
 
             # --- SENTENCE-BASED ANALYSIS ---
             for i, page in enumerate(pages):
