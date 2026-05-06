@@ -14,7 +14,7 @@ tags:
 sdk_version: 1.57.0
 ---
 # 📊 Global Trend Analyst
-### [🚀 Launch Live Terminal](https://huggingface.co)
+### [🚀 Launch Live Terminal](https://huggingface.co/spaces/chaitudan/global-trend-analyst)
 
 A high-performance financial dashboard designed for institutional-grade stock analysis and forensic auditing.
 
